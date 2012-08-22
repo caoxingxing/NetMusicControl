@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+
+    <LinearLayout
+        android:id="@+id/category_layout"
+        android:layout_width="150dip"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dip"
+		android:background="@drawable/border"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="25dip"
+            android:gravity="center"
+            android:text="分类名称"
+            android:textColor="#ff404040"
+            android:background="@drawable/border"
+            android:textSize="20dip" />
+
+        <ListView
+            android:id="@+id/category_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="#00000000"
+            android:choiceMode="singleChoice"
+            android:divider="#FFCC00"
+            android:scrollingCache="false" >
+
+            <!-- Preview: listitem=@android:layout/simple_list_item_1 -->
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/album_info_layout"
+        android:layout_width="200dip"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dip"
+        android:layout_toRightOf="@+id/category_layout"
+        android:background="@drawable/border"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="25dip"
+            android:gravity="center"
+            android:text="专辑名称"
+            android:textColor="#ff404040"
+            android:background="@drawable/border"
+            android:textSize="20dip" />
+
+        <ListView
+            android:id="@+id/album_info_list"
+            android:layout_width="200dip"
+            android:layout_height="match_parent"
+            android:cacheColorHint="#00000000"
+            android:choiceMode="singleChoice"
+            android:scrollingCache="false" >
+
+            <!-- android:divider="#FFCC00" -->
+            <!-- Preview: listitem=@android:layout/simple_list_item_1 -->
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/song_info_layout"
+        android:layout_width="350dip"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dip"
+        android:layout_toRightOf="@+id/album_info_layout"
+        android:background="@drawable/border"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/song_child_layout"
+            android:layout_width="match_parent"
+            android:layout_height="25dip"
+            android:background="@drawable/border"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="300dip"
+                android:layout_height="25dip"
+                android:gravity="center"
+                android:text="歌曲名称"
+                android:textColor="#ff404040"
+                android:textSize="20dip" />
+
+            <TextView
+                android:layout_width="100dip"
+                android:layout_height="25dip"
+                android:gravity="right"
+                android:text="歌手名称"
+                android:textColor="#ff404040"
+                android:textSize="20dip" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/song_info_list"
+            android:layout_width="match_parent"
+            android:layout_height="350dip"
+            android:cacheColorHint="#00000000"
+            android:choiceMode="singleChoice"
+            android:divider="#FFCC00" >
+
+            <!-- Preview: listitem=@android:layout/simple_list_item_checked -->
+        </ListView>
+
+        <LinearLayout
+            android:id="@+id/song_space_layout"
+            android:layout_width="match_parent"
+            android:layout_height="20dip"
+            android:background="#00000000"
+            android:orientation="horizontal" >
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dip" >
+
+            <Button
+                android:id="@+id/reverse_select_btn"
+                android:layout_width="70dip"
+                android:layout_height="55dip"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dip"
+                android:text="反选"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/confirm_btn"
+                android:layout_width="70dip"
+                android:layout_height="55dip"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dip"
+                android:layout_marginLeft="60dip"
+                android:layout_toRightOf="@+id/reverse_select_btn"
+                android:text="下载"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/all_select_btn"
+                android:layout_width="70dip"
+                android:layout_height="55dip"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dip"
+                android:layout_marginRight="60dip"
+                android:layout_toLeftOf="@+id/reverse_select_btn"
+                android:text="全选"
+                android:visibility="invisible" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/background">
+	<Button android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true" android:layout_width="wrap_content"
+		android:background="@drawable/backbtn" android:id="@+id/backmain_btn"></Button>
+	<Button android:layout_alignParentLeft="true"
+		android:layout_marginTop="50dip" android:layout_marginLeft="100dip"
+		android:layout_height="wrap_content" android:layout_width="wrap_content"
+		android:id="@+id/start_record_btn"></Button>
+	<Button android:layout_height="wrap_content"
+		android:layout_alignParentRight="true" android:layout_marginTop="50dip"
+		android:layout_marginRight="100dip" android:layout_width="wrap_content"
+		android:id="@+id/save_record_btn"></Button>
+	<Chronometer android:layout_alignParentTop="true"
+		android:layout_marginTop="50dip" android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:layout_centerHorizontal="true"
+		android:id="@+id/rec_chronometer"></Chronometer>
+	<ListView android:layout_width="300dip" android:layout_height="wrap_content"
+		android:layout_marginTop="20dip"
+		android:layout_below="@+id/rec_chronometer" android:cacheColorHint="#00000000"
+		android:id="@+id/record_list" android:layout_centerHorizontal="true"></ListView>
+</RelativeLayout>

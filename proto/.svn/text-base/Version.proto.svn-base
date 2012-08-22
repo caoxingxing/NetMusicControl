@@ -1,0 +1,5 @@
+option java_package = "sungeo.netmusic.protocol";  
+option java_outer_classname = "DataVersion"; 
+message Version {
+	optional int32 data_version = 1;
+}

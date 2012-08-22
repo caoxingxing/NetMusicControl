@@ -1,0 +1,17 @@
+option java_package = "sungeo.netmusic.protocol";  
+option java_outer_classname = "SongsInfo"; 
+message MusicInfoOfSingleCat {
+	optional int32 cat_id = 1;
+	repeated MusicInfo music_info = 2;
+}
+
+message MusicInfo {
+	optional int32 ablum_id = 1;
+	
+	message SongInfo {
+		optional int32 	song_id 		= 1;
+		optional string 	song_singer = 2;
+		optional string 	song_name 	= 3;
+	}
+	repeated SongInfo song_info = 2;
+}

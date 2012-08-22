@@ -1,0 +1,463 @@
+package sungeo.netmusic.netbase;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+import sungeo.netmusic.data.MainApplication;
+import sungeo.netmusic.objects.PackageObject;
+import sungeo.netmusic.protocol.ProtocolCommand;
+import sungeo.netmusic.protocol.RadioFreqPacketHandler;
+import sungeo.netmusic.protocol.TcpPacketHandler;
+import sungeo.netmusic.unit.ActionListener;
+import sungeo.netmusic.unit.OverTimeAdapter;
+import sungeo.netmusic.unit.ParsePacket;
+
+
+public class SocketReciveThread implements Runnable, ActionListener{
+	private Socket 				mClientSocket;
+	private boolean 			mInitiative 	= false;
+	private boolean 			mConnected 		= false;
+	private DataInputStream 	mDataInStr;
+	private DataOutputStream 	mDataOutStr;
+	private final int 			CONNECT_TYPE 	= 0x8160;
+	private OverTimeAdapter 	mTimeoutTimer;// 发送控制数据的超时定时器
+
+	public SocketReciveThread(Socket socket, boolean flag) {
+		mClientSocket = socket;
+		mInitiative = flag;
+
+		if (!mInitiative) {
+			startTimeoutTimer(CONNECT_TYPE);
+		}
+		if (mClientSocket != null) {
+			try {
+				mDataInStr = new DataInputStream(mClientSocket.getInputStream());
+				mDataOutStr = new DataOutputStream(mClientSocket.getOutputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void sendDataToGateway() {
+		TcpPacketHandler packet = new TcpPacketHandler();
+		PackageObject obj = packet.getPackage(ProtocolCommand.MSG_TYPE_UPDATE_MUSIC);
+		if (obj != null) {
+			send(obj.getPackageBytes(), ProtocolCommand.MSG_TYPE_UPDATE_MUSIC);
+			/*if (ret) {
+				UIGlobal.showStringMsg("发送数据同步成功");
+			}else {
+				UIGlobal.showStringMsg("发送失败");
+			}*/
+		}
+	}
+
+	public void sendOpenPowerToGateway() {
+		RadioFreqPacketHandler packet = new RadioFreqPacketHandler();
+		char addr = MainApplication.getInstance().getmConfig().getPowAddr();
+		char selfAddr = MainApplication.getInstance().getmConfig().getSelfAddr();
+		char usercode = MainApplication.getInstance().getmConfig().getUsercode();
+		packet.setTargetAddress(addr);
+		packet.setUsercode(usercode);
+		packet.setAddress(selfAddr);
+		PackageObject obj = packet.getRfSendPacket(ProtocolCommand.CMD_POWER_ON);
+		byte[] subtype = new byte[16];
+		subtype[0] = 1;
+		obj.setUsername(subtype);
+		if (obj != null) {
+			send(obj.getPackageBytes(), ProtocolCommand.CMD_POWER_ON);
+		}
+	}
+
+	public void sendClosePowerToGateway() {
+		RadioFreqPacketHandler packet = new RadioFreqPacketHandler();
+		char addr = MainApplication.getInstance().getmConfig().getPowAddr();
+		char selfAddr = MainApplication.getInstance().getmConfig().getSelfAddr();
+		char usercode = MainApplication.getInstance().getmConfig().getUsercode();
+		packet.setTargetAddress(addr);
+		packet.setUsercode(usercode);
+		packet.setAddress(selfAddr);
+		PackageObject obj = packet.getRfSendPacket(ProtocolCommand.CMD_POWER_OFF);
+		byte[] subtype = new byte[16];
+		subtype[0] = 1;
+		obj.setUsername(subtype);
+		if (obj != null) {
+			send(obj.getPackageBytes(), ProtocolCommand.CMD_POWER_OFF);
+		}
+	}
+
+	public void sendStateToGateway(byte param) {
+		RadioFreqPacketHandler packet = new RadioFreqPacketHandler();
+		char selfAddr = MainApplication.getInstance().getmConfig().getSelfAddr();
+		char usercode = MainApplication.getInstance().getmConfig().getUsercode();
+		packet.setAddress(selfAddr);
+		packet.setUsercode(usercode);
+		packet.setTargetAddress(ProtocolCommand.ADDR_BROADCAST);
+		byte[] params = new byte[1];
+		params[0] = param;
+		packet.setParams(params);
+		PackageObject obj = packet.getRfSendPacket(ProtocolCommand.CMD_STATE_SYNC);
+		byte[] subtype = new byte[16];
+		subtype[0] = 1;
+		obj.setUsername(subtype);
+		if (obj != null) {
+			send(obj.getPackageBytes());
+		}
+	}
+
+	public void sendInfoToGateway() {
+		if (!MainApplication.getInstance().ismNotifiSucess()) {
+			//向网关报到
+			TcpPacketHandler packet = new TcpPacketHandler();
+			PackageObject obj = packet.getPackage(ProtocolCommand.MSG_TYPE_NOTIFY_GATEWAY);
+			if (obj != null) {
+				send(obj.getPackageBytes(), ProtocolCommand.MSG_TYPE_NOTIFY_GATEWAY);
+			}
+		}
+	}
+
+	@Override
+	public void run() {
+		int ret = 0; // 长度帧
+		int totalLen = 0; // 包长
+		int recvedLen = 0;
+		byte[] buf;
+		PackageObject obj;
+		try {
+			byte[] lenBytes = new byte[2];
+			if (mClientSocket == null) {
+				return;
+			}
+			mConnected = mClientSocket.isConnected();
+			while (mConnected) {
+
+				if (mDataInStr == null) {
+					break;
+				}
+				//读取数据长度帧
+				ret = mDataInStr.read(lenBytes);
+				if(-1 == ret){
+					// 连接被关闭
+					break;
+				} else if (ret != 2) {
+					continue;
+				}
+
+				//包长
+				totalLen = getTotalLen(lenBytes);
+				if (totalLen <= 0) {
+					continue;
+				}
+
+				//初始化接收缓存
+				buf = new byte[totalLen];
+				System.arraycopy(lenBytes, 0, buf, 0, 2);
+
+				recvedLen = 2;
+				while(recvedLen < totalLen){
+					if (mDataInStr == null) {
+						break;
+					}
+					ret = mDataInStr.read(buf, recvedLen, totalLen - recvedLen);
+					if (0 > ret) {                            
+						break;
+					}
+
+					recvedLen += ret;                        
+				}
+
+				if(recvedLen < totalLen){
+					// 连接关闭
+					break;
+				}                                  
+
+				//根据协议将缓存中的数据拆包
+				obj = decodePackage(buf);
+				if (obj == null) {
+					continue;
+				}
+
+
+				if (obj.getPackageType() == ProtocolCommand.MSG_TYPE_NOTIFY_GATEWAY) {
+					//UIGlobal.showStringMsg("收到IP回馈");
+				}
+				/*if (obj.getPackageType() == ProtocolCommand.MSG_TYPE_UPDATE_MUSIC) {
+					UIGlobal.showStringMsg("收到同步数据回馈");
+				}*/
+				if (mTimeoutTimer != null && mTimeoutTimer.getPlus() == obj.getPackageType()) {
+					//UIGlobal.showStringMsg("收到IP回馈，关闭定时器");
+					//发送的数据被处理
+					stopTimeoutTimer();
+				}
+
+
+				// 通知前、后台监听器处理数据
+				boolean result = onReceive(obj);
+				if (result) {
+					//如果是想要的回馈，把连接断开
+					disconnect();
+				}
+
+				if (mClientSocket == null) {
+					mConnected = false;
+				} else {
+					mConnected = mClientSocket.isConnected();
+				}
+			}
+
+			// 接收数据出现异常，断开连接
+			disconnect();
+		} catch (IOException e) {
+			disconnect();
+		}
+	}
+
+	private boolean onReceive(PackageObject obj) {
+		boolean flag = false;
+		ClientHandleMsg clientMsg = new ClientHandleMsg();
+		clientMsg.handleMsg(obj);
+		flag = clientMsg.isWorked();
+		if (clientMsg.isSync() && mInitiative) {
+			//开四路模块时，网关会先回个09,再回个81,此处是为了能收到81
+			return false;
+		}
+		//如果是主动连接网关，在收到回馈后返回true，以便断开连接
+		if (mInitiative) {
+			return true;
+		}
+
+		if (obj.getPackageType() == ProtocolCommand.MSG_TYPE_UPDATE_MUSIC) {
+			if (obj.getExecStatus() != 0) {
+				disconnect();
+				MainApplication.getInstance().getmClientSocket().startConnectGateway(ClientSocket.NOTIFI_UPDATE_DATA);
+			}
+			return true;
+		}
+		//被动接收网关的连接，另做处理，或发回馈，或不回馈，会有定时器检查是否断开连接，如果连接没有断开，超时后断开连接
+		if (obj.getPackageType() != ProtocolCommand.MSG_TYPE_NOTIFY_GATEWAY) {
+			PackageObject po = clientMsg.getReplyPackage();
+			if (po != null) {
+				send(po.getResponsePackageBytes());
+			}
+		} else {
+			MainApplication.getInstance().setmNotifiSucess(flag);
+			
+			if (!flag) {
+				flag = true;//用于关闭当前连接，定时器会打开下个连接，通知网关
+			}
+		}
+		return flag;
+	}
+
+	/**
+	 * 发送响应包
+	 */
+
+
+	/**
+	 * 对接收到的数据进行解包
+	 * @param data 实体数据
+	 * @return 解包成功返回解包后生成的协议对象
+	 */
+	protected PackageObject decodePackage(byte[] data) {
+		int pkgLen = getTotalLen(data);
+		if (pkgLen == data.length) { //data中可能存在多个数据包
+			byte resType = data[2];
+			byte[] userName = new byte[16];
+			System.arraycopy(data, 3, userName, 0, 16);
+			byte resStatus = -2;
+			int packetHeadLen = 0;
+			if (mInitiative) {
+				packetHeadLen = ParsePacket.NETPAKCAGE_HEAD_RESPONSE_LENGTH;
+			} else {
+				packetHeadLen = ParsePacket.NETPAKCAGE_HEAD_REQUEST_LENGTH;
+			}
+			if (data.length >= packetHeadLen && mInitiative) {
+				resStatus = data[packetHeadLen - 1];
+			}
+			if (pkgLen > packetHeadLen) {
+				//有包体的包
+				int bodyLen = pkgLen - packetHeadLen;
+				byte[] body = new byte[bodyLen];
+				System.arraycopy(data, packetHeadLen, body, 0, bodyLen);
+				//分解包
+				PackageObject po = new PackageObject();
+
+				//保存整个包
+				po.setPackageData(data);
+
+				po.setPackLen(pkgLen);
+				po.setUsername(userName);
+				po.setExecStatus(resStatus);
+				po.setPackageType(resType);
+
+				//处理包体
+				po.setPackageBytes(body);
+
+				return po;
+			} else {
+				//只有包头的包的处理
+				//分解包
+				PackageObject po = new PackageObject();
+				po.setPackLen(pkgLen);
+				po.setUsername(userName);
+				po.setExecStatus(resStatus);
+				po.setPackageType(resType);
+
+				//保存整个包
+				po.setPackageData(data);
+
+				return po;
+			}
+		} else {
+			//多个网络包处理
+			return null;
+		}
+	}
+
+	private int getTotalLen(byte[] lenBytes) {
+		return ((lenBytes[0] & 255) << 8) | (lenBytes[1] & 255);
+	}
+
+	/**
+	 * 断开连接
+	 */
+	public void disconnect() {
+		if (mTimeoutTimer != null) {
+			mTimeoutTimer.cancel();
+		}
+
+		if (mClientSocket != null) {
+			try {
+				closeOutStream();
+				closeInputStream();
+				closeSocket();              
+			} catch (IOException ex) {
+
+			}
+		}
+	}
+
+	/**
+	 * 发送数据，为响应网关请求，发送完成后直接断开连接，不用等待超时
+	 */
+	public boolean send(byte[] buf) {
+		if(mDataOutStr == null){
+			return false;
+		}
+
+		try {
+			//发送数据
+			mDataOutStr.write(buf);//并不一定立即执行I/O操作
+			mDataOutStr.flush();//立即执行I/O操作
+			return true;
+		} catch (IOException ex) {
+			return false;
+		}     
+	}
+
+	/**
+	 * 发送数据
+	 * @param buf
+	 * @int plus作为定时器的指令的关键字,无线命令作为关键字的时候需要和0x8000进行或运算，以便和pc协议区别
+	 * @return
+	 */
+	public boolean send(byte[] buf, int plus) {
+		startTimeoutTimer(plus);   
+
+		return send(buf);
+	}
+
+	private void closeInputStream() throws IOException {
+		if (mDataInStr != null) {
+			mDataInStr.close();
+			mDataInStr = null;
+		}
+	}
+
+	private void closeOutStream() throws IOException {
+		// WARNING 结束线程是否会soc.close而结束，需要测试
+		//关闭输出和输入流
+		if (mDataOutStr != null) {
+			mDataOutStr.close();
+			mDataOutStr = null;
+		}
+
+		if (mTimeoutTimer != null && mTimeoutTimer.isRunning()) {
+			mTimeoutTimer.cancel();
+		}
+	}
+
+	private void closeSocket() throws IOException {
+		//关闭socket
+		mClientSocket.close();
+		mClientSocket = null;
+	}
+
+	/**
+	 * 开启普通通讯超时定时器
+	 */
+	private void startTimeoutTimer(int plus) {
+		if (mTimeoutTimer == null) {
+			mTimeoutTimer = new OverTimeAdapter();
+		}
+		long waitTime;
+
+		if (plus == CONNECT_TYPE) {
+			waitTime = 5 * 1000;
+		} else if (plus == ProtocolCommand.CMD_POWER_ON){
+			//这里等待10s是因为，报警后打开四路模块时间较长
+			waitTime = 10 * 1000;
+		} else {
+			waitTime = 6 * 1000;
+		}
+
+		mTimeoutTimer.setActionListener(this);
+		mTimeoutTimer.setWaitTime(waitTime);
+		mTimeoutTimer.setPlus(plus);
+		mTimeoutTimer.start();
+	}
+
+	private void stopTimeoutTimer() {
+		if (mTimeoutTimer != null) {
+			mTimeoutTimer.cancel();
+			mTimeoutTimer = null;
+		}
+	}
+
+	@Override
+	public void overTimePerformed(int plus) {
+		stopTimeoutTimer();
+		if (plus == ProtocolCommand.MSG_TYPE_NOTIFY_GATEWAY) {
+			if (!MainApplication.getInstance().ismNotifiSucess()) {
+				int serial = MainApplication.getInstance().getmConfig().getSelfSerial();
+				if (serial != 0) {
+					MainApplication.getInstance().getmMsgSender().sendStrMsg("等待网关回馈超时");
+					disconnect();
+					MainApplication.getInstance().getmClientSocket().startConnectGateway(ClientSocket.NOTIFI_GATEWAY_IP);
+				}
+			} else {
+				disconnect();
+			}
+		} else if (plus == CONNECT_TYPE) {
+			//如果网关连接超时没有断开，由背景音乐断开
+			disconnect();
+		} else if (plus == ProtocolCommand.CMD_POWER_OFF) {
+			MainApplication.getInstance().getmMsgSender().sendStrMsg("等待关回馈超时");
+		} else if (plus == ProtocolCommand.CMD_POWER_ON) {
+			//等待开回馈超时时就向网关发送关命令，因为开的命令已经加入网关堆列中，此时不关可以引起四路模块一直开着
+			//此时如果有报警信息，则将报警信息清空
+			if (MainApplication.getInstance().getmHostAlarmName() != null) {
+				MainApplication.getInstance().setmHostAlarmName(null);
+			}
+			//ClientSocket.startConnectGateway(ClientSocket.CLOSE_CTRL_POWER);
+			MainApplication.getInstance().getmMsgSender().sendStrMsg("等待开回馈超时");
+		} else if (plus == ProtocolCommand.MSG_TYPE_UPDATE_MUSIC) {
+			MainApplication.getInstance().getmMsgSender().sendStrMsg("等待更新数据回馈超时");
+			disconnect();
+			MainApplication.getInstance().getmClientSocket().startConnectGateway(ClientSocket.NOTIFI_UPDATE_DATA);
+		}
+	}
+}

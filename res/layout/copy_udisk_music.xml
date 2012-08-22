@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<ListView android:layout_height="wrap_content"
+		android:layout_alignParentTop="true" android:id="@+id/udisk_music_list_view"
+		android:layout_above="@+id/udisk_music_select_all"
+		android:layout_width="fill_parent"></ListView>
+	<Button android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_alignParentBottom="true"
+		android:id="@+id/udisk_music_select_all" android:text="@string/udisk_str_selectall"
+		android:height="30dip"></Button>
+	<Button android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_alignParentBottom="true"
+		android:layout_toRightOf="@+id/udisk_music_select_all" android:height="30dip"
+		android:text="@string/udisk_str_unselect_all" android:id="@+id/udisk_music_unselect_all"
+		android:layout_alignTop="@+id/udisk_music_select_all"></Button>
+	<Button android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_alignParentBottom="true"
+		android:text="@string/udisk_str_copy" android:id="@+id/udisk_music_copy"
+		android:layout_toRightOf="@+id/udisk_music_unselect_all"
+		android:layout_alignTop="@+id/udisk_music_select_all"></Button>
+	<Button android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true" android:id="@+id/udisk_music_close_panel"
+		android:text="@string/back_btn"></Button>
+</RelativeLayout>

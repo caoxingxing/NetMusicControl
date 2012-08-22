@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/background">
+
+	<GridView android:id="@+id/main_gridview"
+		android:layout_centerHorizontal="true" android:layout_gravity="center"
+		android:horizontalSpacing="30dip" android:numColumns="auto_fit" android:verticalSpacing="10dip"
+		android:scrollbars="none" android:columnWidth="100dip"
+		android:stretchMode="columnWidth" android:layout_centerVertical="true"
+		android:layout_height="wrap_content" android:layout_width="wrap_content" 
+		android:layout_marginBottom="40dip"/>
+		
+	<Button android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true" android:layout_width="wrap_content"
+		android:layout_centerHorizontal="true" android:text="@string/empty_str"
+		android:id="@+id/btn_record" android:visibility="gone"></Button>
+		<!--加入系统的不显示录音  android:layout_above="@+id/btn_record"-->
+		
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="150dip" android:textColor="#ffffffff"
+		android:text=" " android:layout_alignParentBottom="true"
+		android:textSize="20dip" android:layout_alignParentLeft="true"
+		android:id="@+id/curplay_songname" android:layout_toLeftOf="@+id/btn_record"
+		android:layout_alignTop="@+id/btn_record" android:layout_alignBottom="@+id/btn_record"
+		android:gravity="left" android:singleLine="true"
+		android:marqueeRepeatLimit="marquee_forever"
+		android:layout_marginLeft="10dip" android:ellipsize="end"></TextView>
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="150dip" android:textColor="#ffffffff"
+		android:text=" " android:layout_alignParentBottom="true"
+		android:textSize="20dip" android:layout_alignParentRight="true"
+		android:id="@+id/nextplay_songname" android:layout_toRightOf="@+id/btn_record"
+		android:layout_alignTop="@+id/btn_record" android:layout_alignBottom="@+id/btn_record"
+		android:gravity="right" android:singleLine="true"
+		android:layout_marginRight="10dip" android:ellipsize="end"></TextView>
+</RelativeLayout>

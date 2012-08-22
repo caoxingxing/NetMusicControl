@@ -1,0 +1,58 @@
+10
+
+dir
+10358
+svn://192.168.11.22/svn/sungeo/NetMusic/NetMusicControl/src/sungeo/netmusic
+svn://192.168.11.22/svn/sungeo
+
+
+
+2012-06-28T00:48:15.555940Z
+10357
+caoxingxing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+55070f4f-0eaa-9943-a50e-0bf4358849ce
+
+unit
+dir
+
+netbase
+dir
+
+protocol
+dir
+
+broadcastreceiver
+dir
+
+download
+dir
+
+data
+dir
+
+objects
+dir
+
+manager
+dir
+
+activity
+dir
+
+gpio
+dir
+

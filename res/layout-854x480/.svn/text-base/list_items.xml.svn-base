@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/RelativeLayout01"
+	android:layout_width="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content" android:paddingBottom="6dip"
+	android:paddingLeft="9dip" android:paddingRight="9dip">
+	<ImageView android:layout_alignParentLeft="true" android:layout_centerVertical="true"
+		android:layout_width="26dip" android:layout_height="26dip" android:id="@+id/ItemImage" />
+	<TextView android:text="TextView01" android:layout_height="wrap_content"
+		android:textSize="25dip" android:textColor="#ffffffff"
+		android:layout_marginLeft="30dip" android:layout_width="300dip"
+		android:id="@+id/ItemTitle" android:ellipsize="end" android:singleLine="true"
+		android:marqueeRepeatLimit="marquee_forever"/>
+	<TextView android:text="" android:layout_height="wrap_content"
+		android:textSize="25dip" android:layout_alignParentRight="true"
+		android:layout_width="100dip" android:ellipsize="end"
+		android:id="@+id/singer_text" android:singleLine="true" 
+		android:layout_alignParentTop="true" android:marqueeRepeatLimit="marquee_forever"/>
+	<ImageView android:id="@+id/delImage" android:layout_width="wrap_content"
+		android:layout_height="fill_parent" android:layout_alignParentRight="true"
+		android:focusable="false" android:visibility="gone" />
+</RelativeLayout>

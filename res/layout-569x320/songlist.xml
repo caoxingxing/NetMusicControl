@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:panel="http://schemas.android.com/apk/res/com.sungeo"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/background">
+	<TextView android:id="@+id/album_title_text"
+		android:layout_height="wrap_content" android:layout_width="wrap_content"
+		android:layout_alignParentTop="true" android:textColor="#ffffffff"
+		android:layout_marginTop="10dip" android:text="专辑名称" android:textSize="30dip"
+		android:layout_centerHorizontal="true"></TextView>
+	
+	<Button android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:background="@drawable/repeatone_normal"
+		android:id="@+id/playsmode_btn" android:gravity="right"
+		android:layout_marginRight="20dip" android:layout_alignParentRight="true"
+		android:layout_alignTop="@+id/listView1">
+	</Button>
+	<Button android:layout_height="wrap_content"
+		android:layout_below="@+id/playsmode_btn" android:layout_width="wrap_content"
+		android:background="@drawable/repeat_normal" android:id="@+id/playomode_btn"
+		android:layout_alignRight="@+id/playsmode_btn"
+		android:layout_alignParentRight="false">
+	</Button>
+	<Button android:layout_height="wrap_content"
+		android:layout_below="@+id/playomode_btn" android:layout_width="wrap_content"
+		android:background="@drawable/random_normal" android:id="@+id/playrmode_btn"
+		android:layout_alignParentRight="false" android:layout_alignRight="@+id/playsmode_btn">
+	</Button>
+	<Button android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true" android:layout_width="wrap_content"
+		android:background="@drawable/backbtn" android:id="@+id/backmain_btn"
+		android:layout_alignParentRight="false" android:layout_alignRight="@+id/playsmode_btn"></Button>
+	<RelativeLayout android:id="@id/panelContent"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true" android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<Button android:id="@+id/ctrl_playbtn" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:background="@drawable/playpanel" android:layout_gravity="center_horizontal"
+			android:layout_centerHorizontal="true" android:layout_centerInParent="true" />
+		<Button android:id="@+id/ctrl_prebtn" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:background="@drawable/prepanel"
+			android:layout_toLeftOf="@+id/ctrl_playbtn"
+			android:layout_centerInParent="true" android:layout_marginRight="20dip" />
+		<Button android:id="@+id/ctrl_nextbtn" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:background="@drawable/nextpanel" android:layout_toRightOf="@+id/ctrl_playbtn"
+			android:layout_centerInParent="true" android:layout_marginLeft="20dip" />
+		<Button android:id="@+id/volume_decbtn" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:background="@drawable/volumedec" android:layout_toLeftOf="@+id/ctrl_prebtn"
+			android:layout_centerInParent="true" android:layout_marginRight="20dip" />
+		<Button android:id="@+id/volume_addbtn" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:background="@drawable/volumeadd" android:layout_toRightOf="@+id/ctrl_nextbtn"
+			android:layout_centerInParent="true" android:layout_marginLeft="20dip" />
+		<Button android:id="@+id/music_delbtn" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:layout_alignParentLeft="true"
+			android:layout_centerInParent="true" android:layout_marginLeft="20dip" />
+	</RelativeLayout>
+	<ListView android:layout_width="fill_parent" android:id="@+id/listView1"
+		android:layout_below="@+id/album_title_text" android:layout_height="400dip"
+		android:cacheColorHint="#00000000" android:layout_marginLeft="40dip"
+		android:choiceMode="singleChoice" android:layout_toLeftOf="@+id/playsmode_btn"
+		android:layout_above="@id/panelContent" android:divider="#FFCC00">
+	</ListView>
+</RelativeLayout>

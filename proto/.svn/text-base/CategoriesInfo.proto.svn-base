@@ -1,0 +1,10 @@
+option java_package = "sungeo.netmusic.protocol";  
+option java_outer_classname = "CategoriesInfo"; 
+
+message CategoryList {
+	message CategoryInfo {
+		optional int32 	cat_id 				 = 1;
+		optional string 	category_name = 2;
+	}
+	repeated CategoryInfo cat_info = 1;
+}
