@@ -95,7 +95,7 @@ public class RecordMgr {
 	}
 
 	private void playRecord(String path) {
-		MainApplication.getInstance().getmMediaMgr().setRecord(true);
+		//MainApplication.getInstance().getmMediaMgr().setRecord(true);
 		MainApplication.getInstance().getmMediaMgr().play(path, true);
 	}
 
