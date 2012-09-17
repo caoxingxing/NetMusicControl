@@ -3,6 +3,7 @@ package sungeo.netmusic.netbase;
 import sungeo.netmusic.data.MainApplication;
 import sungeo.netmusic.objects.PackageObject;
 import sungeo.netmusic.objects.RadioFreqRecord;
+import sungeo.netmusic.objects.RequestPlayRecord;
 import sungeo.netmusic.objects.SecurityRecord;
 import sungeo.netmusic.protocol.CommPackDeal;
 import sungeo.netmusic.protocol.ProtocolCommand;
@@ -66,6 +67,10 @@ public class ClientHandleMsg {
 			MainApplication.getInstance().getmMsgSender().sendHostAlarm();
 		}
 		break;
+		case ProtocolCommand.MSG_TYPE_REQUEST_PLAY: {
+		    handlePlayInLine(obj);
+		    break;
+		}
 		default:
 			break;
 		}
@@ -126,6 +131,19 @@ public class ClientHandleMsg {
 		}
 
 		return flag;
+	}
+	
+	private boolean handlePlayInLine(PackageObject obj) {
+	    boolean flag = false;
+	    TcpPacketHandler tcpPacket = new TcpPacketHandler();
+	    int len = obj.getRecords().getSize();
+	    for (int i = 0; i < len; i ++) {
+	        RequestPlayRecord rpr = (RequestPlayRecord)obj.getRecords().getRecordByIndex(i);
+	        tcpPacket.setBody(rpr.getmUrl().getBytes());
+	    }
+	    
+	    mReplyPackage = tcpPacket.getPackage(obj.getPackageType());
+	    return flag;
 	}
 	
 	private boolean handleQueryMusic(byte cmd) {
