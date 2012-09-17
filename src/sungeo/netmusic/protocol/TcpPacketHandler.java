@@ -34,7 +34,17 @@ public class TcpPacketHandler {
 			po.setExecStatus((byte)0);
 		} else if (cmd == ProtocolCommand.MSG_TYPE_UDP_BROADCAST) {
 			
-		}
+		} else if (cmd == ProtocolCommand.MSG_TYPE_REQUEST_PLAY) {
+		    String url = new String(mBody);
+		    boolean flag = MainApplication.getInstance().getmMediaMgr().playByUrl(url);
+		    if (flag) {
+		        MainApplication.getInstance().getmMsgSender().sendStrMsg(url);
+		        po.setExecStatus((byte)0);
+		    } else {
+		        MainApplication.getInstance().getmMsgSender().sendStrMsg("正在处理上一请求");
+		        po.setExecStatus((byte)-1);
+		    }
+		} 
 
 		return po;
 	}
