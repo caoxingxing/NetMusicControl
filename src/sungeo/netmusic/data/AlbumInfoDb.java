@@ -69,7 +69,7 @@ public class AlbumInfoDb {
 			return;
 		}
 		try {
-			os = mMainApp.openFileOutput(name, Context.MODE_PRIVATE);
+			os = mMainApp.openFileOutput(name, Context.MODE_WORLD_READABLE);
 			int len = data.length;
 			byte[] bodyLen = new byte[4];
 			bodyLen[3] = (byte)len;
