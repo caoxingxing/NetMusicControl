@@ -305,11 +305,11 @@ public class MainActivity extends BaseActivity{
 	}
 
 	private boolean checkPlayState() {
-		if (mMainApp.getmCurPlayAlbumId() == 0) {
-			return false;
+		if (MainApplication.isPlaying) {
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	private void refreshCtrlBtnState() {
@@ -318,7 +318,12 @@ public class MainActivity extends BaseActivity{
 		MainApplication.getInstance().getmMsgSender().OutputLogToSD("refreshCtrlBtnState函数得到的getmCurPlayAlbumId()为："+String.valueOf(id+1));
 		MainApplication.getInstance().getmMsgSender().setDebugLevel(1);*/
 		myGrid.getAdapter();
-		mMainGridAdapter.setPlayingId(id);
+		if (MainApplication.isPlaying) {
+		    mMainGridAdapter.setPlayingId(id);
+		} else {
+		    mMainGridAdapter.setPlayingId(-1);
+		}
+		
 		mMainGridAdapter.notifyDataSetChanged();
 	}
 
