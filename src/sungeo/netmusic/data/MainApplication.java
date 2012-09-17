@@ -21,6 +21,7 @@ import android.util.DisplayMetrics;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
+import sungeo.netmusic.broadcastreceiver.CustomBroadcastReceiver;
 import sungeo.netmusic.broadcastreceiver.HardwareBroadcastReceiver;
 import sungeo.netmusic.broadcastreceiver.HeadsetBroadcastReceiver;
 import sungeo.netmusic.broadcastreceiver.NetworkStateBroadcastReceiver;
@@ -87,6 +88,7 @@ public class MainApplication extends Application {
     private PhoneStateBroadcastReceiver mPhoneReceiver;
     private NotifiBroadcastReceiver mNotifiReceiver;
     private NetworkStateBroadcastReceiver mNetworkStateReceiver;
+    private CustomBroadcastReceiver mCustomReceiver;
 
     private List<AlbumRecordInfo> mAllAlbum = new ArrayList<AlbumRecordInfo>();
     private List<AlbumRecordInfo> mDownAlbum = new ArrayList<AlbumRecordInfo>();
@@ -218,6 +220,7 @@ public class MainApplication extends Application {
         mPhoneReceiver = new PhoneStateBroadcastReceiver();
         mNotifiReceiver = new NotifiBroadcastReceiver(this);
         mNetworkStateReceiver = new NetworkStateBroadcastReceiver();
+        mCustomReceiver = new CustomBroadcastReceiver();
     }
 
     public void initAllAlbumInfo() {
@@ -405,7 +408,10 @@ public class MainApplication extends Application {
     public void sendUdpBroadcast() {
         UdpSocket udpSocket = new UdpSocket();
         boolean flag = udpSocket.sendUdpPacket();
-        if (flag)
+        /**
+         * 在没有找到网关时，将不会打开6019端口，暂时先注释if(flag)，需要再打开
+         */
+        //if (flag)
             openSocket();
     }
 
@@ -478,6 +484,7 @@ public class MainApplication extends Application {
         IntentFilter netStateFilter = new IntentFilter();
         netStateFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(mNetworkStateReceiver, netStateFilter);
+        registerReceiver(mCustomReceiver, new IntentFilter("cxxowl.sungeo.com"));
     }
 
     public void unRegisterReceiver() {
@@ -487,6 +494,7 @@ public class MainApplication extends Application {
         unregisterReceiver(mHeadsetReceiver);
         unregisterReceiver(mNotifiReceiver);
         unregisterReceiver(mNetworkStateReceiver);
+        unregisterReceiver(mCustomReceiver);
     }
 
     public int getNextNotNullAlbumId(int albumId) {
