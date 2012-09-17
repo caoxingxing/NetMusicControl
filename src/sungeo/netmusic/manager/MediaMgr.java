@@ -38,7 +38,7 @@ public class MediaMgr {
 	private int 				mErrorPlay 			= -1;
 	private int					mErrorIndex			= -1;
 	private boolean 			mTtsPause 			= false;
-	private boolean 			mIsRecord 			= false;
+	private boolean          mOnlinePlay        = false;
 	private Timer				mDelayErrorPlayTimer= null;
 	private MediaPlayer 		mAudioCtrl;
 	private AudioManager 		mAudioManager		= null; //音频
@@ -290,7 +290,7 @@ public class MediaMgr {
 			mAudioCtrl.setDataSource(path);
 			mMainApp.setmLastPlaySongName(path);
 			mAudioCtrl.prepare();
-			boolean ret = sync && !mIsRecord && mMainApp.getmConfig().getSelfAddr() != 0;
+			boolean ret = sync && mMainApp.getmConfig().getSelfAddr() != 0;
 			flag = play(ret);
 		} catch (IllegalArgumentException e) {
 			delayErrorPlayNext(sync);
@@ -306,6 +306,48 @@ public class MediaMgr {
 		addMediaPlayerEvent();
 		return flag;
 	}
+	
+	public boolean playByUrl(String url) {
+	    if (mOnlinePlay) {
+	        return false;
+	    } else {
+	        mOnlinePlay = true;
+	    }
+	    
+	    pause(true);   //播放流媒体前先停止本地播放
+	    
+        boolean flag = false;
+        mAudioCtrl.reset();
+        mAudioCtrl.release();
+        mAudioCtrl = null;
+        mAudioCtrl = new MediaPlayer();
+
+        try {
+            mAudioCtrl.setDataSource(url);
+            mAudioCtrl.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mAudioCtrl.prepare();
+            if (mMainApp.ismGpioIsOpen() && mMainApp.IsDeviceModel()) {
+                //加判断的原因是为了防止在不同专辑间切换播放时，不频繁操作GPIO口
+                closeGpio15();
+            }
+            
+            mAudioCtrl.start();
+            flag = true;
+        } catch (IllegalArgumentException e) {
+            //delayErrorPlayNext(true);
+            mMainApp.getmMsgSender().sendStrMsg("播放出错，尝试播放下一首");
+        } catch (IllegalStateException e) {
+            //delayErrorPlayNext(true);
+            mMainApp.getmMsgSender().sendStrMsg("播放出错，尝试播放下一首");
+        } catch (IOException e) {
+            //delayErrorPlayNext(true);
+            mMainApp.getmMsgSender().sendStrMsg("播放出错，尝试播放下一首");
+        }
+
+        mOnlinePlay = false;
+        //addMediaPlayerEvent();
+        return flag;
+    }
 
 	private boolean isSongExist(String path) {
 		if (path == null) {
@@ -325,12 +367,7 @@ public class MediaMgr {
 
 			@Override
 			public void onCompletion(MediaPlayer mp) {
-				if (mIsRecord) {
-					mAudioCtrl.reset();
-					mIsRecord = false;
-				} else {
-					playNextByMode();
-				}
+				playNextByMode();
 			}});
 
 		mAudioCtrl.setOnErrorListener(new OnErrorListener() {
@@ -396,6 +433,9 @@ public class MediaMgr {
 	}
 
 	private void errorPlayNextByMode(boolean sync) {
+	    if (mCurAlbum == null) {
+	        return;
+	    }
 		int count = mCurAlbum.getSongCount();
 		if (getmErrorPlay() == -1) {
 			setmErrorPlay(getmErrorIndex());
@@ -492,7 +532,7 @@ public class MediaMgr {
 	public void pause(boolean sync) {
 		if (mAudioCtrl.isPlaying()) {
 			mAudioCtrl.pause();
-			initAllIden();
+			//initAllIden();
 			MainApplication.isPause = true;
 			MainApplication.isPlaying = false;
 		}
@@ -641,14 +681,6 @@ public class MediaMgr {
 		mPlayMode = playMode;
 	}
 
-	public void setRecord(boolean isRecord) {
-		mIsRecord = isRecord;
-	}
-
-	public boolean isRecord() {
-		return mIsRecord;
-	}
-
 	public boolean remotePlayNext() {
 		int albumId = mMainApp.getmCurPlayAlbumId();
 		if (albumId == 0) {
@@ -724,7 +756,18 @@ public class MediaMgr {
 	    params[0] = firstParam;
 	    params[1] = (byte)mMainApp.getmCurPlayAlbumId();
 	    params[2] = (byte)mMainApp.getmCurSondIndex();
+	    byte isPlay = (byte)(MainApplication.isPlaying ? 1 : 2);
+	    byte isSilent = (byte)(MainApplication.isSilent ? 1 : 0);
+	    mMainApp.getmMsgSender().broadcastState(isPlay, isSilent, params[1], params[2]);
 	    return params;
+	}
+	
+	public void broadcastState() {
+        byte albumId = (byte)mMainApp.getmCurPlayAlbumId();
+        byte songId = (byte)mMainApp.getmCurSondIndex();
+        byte isPlay = (byte)(MainApplication.isPlaying ? 1 : 2);
+        byte isSilent = (byte)(MainApplication.isSilent ? 1 : 0);
+        mMainApp.getmMsgSender().broadcastState(isPlay, isSilent, albumId, songId);
 	}
 	
 	public void openGpio15() {
