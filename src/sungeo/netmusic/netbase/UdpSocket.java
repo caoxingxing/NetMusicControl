@@ -55,17 +55,14 @@ public class UdpSocket {
 				MainApplication.getInstance().getmMsgSender().sendMsg(MsgSender.MSG_UDP_BROADCAST_RECIVE);
 			return flag;
 		} catch (SocketException e) {
-			// DatagramSocket
 			e.printStackTrace();
 			mUdpSocket.close();
 			return false;
 		} catch (UnknownHostException e) {
-			// InetAddress
 			e.printStackTrace();
 			mUdpSocket.close();
 			return false;
 		} catch (IOException e) {
-			// send
 			e.printStackTrace();
 			mUdpSocket.close();
 			return false;
