@@ -218,12 +218,12 @@ public abstract class BaseActivity extends Activity{
 		strBuf.append(str);
 		strBuf.append(" ");
 		if (mToast == null) {
-			mToast = Toast.makeText(mMainApp, strBuf.toString(), Toast.LENGTH_LONG);
+			mToast = Toast.makeText(this, strBuf.toString(), Toast.LENGTH_LONG);
 		} else {
 			mToast.cancel();
+			mToast = null;
+			mToast = Toast.makeText(this, strBuf.toString(), Toast.LENGTH_LONG);
 		}
-
-		mToast.setText(str);
 		
 		mToast.show();
 	}
