@@ -212,6 +212,24 @@ public class MsgSender {
         BaseActivity.sCurActivity.getMsgHandler().sendMessage(msg);
     }
 
+    public void broadcastState(byte isPlay, byte isSilent, byte albumId, byte songId) {
+        if (BaseActivity.sCurActivity == null) {
+            return;
+        }
+        byte[] state = new byte[4];
+        state[0] = isPlay;
+        state[1] = isSilent;
+        state[2] = albumId;
+        state[3] = songId;
+        //state[0]为1是播放，为2是停止；
+        //state[1]是音量值；
+        //state[2]是当前播放的专辑序号；
+        //state[3]是当前播放的歌曲序号
+        Intent intent = new Intent("netmusic_state_broadcast");
+        intent.putExtra("netmusic_state", state);
+        BaseActivity.sCurActivity.sendBroadcast(intent);
+    }
+    
     public void printLog(String msg) {
         setDebugLevel(6);// 需要打印日志时，将参数改为6,不需要打印时改为5以下
         OutputLogToSD(msg);
