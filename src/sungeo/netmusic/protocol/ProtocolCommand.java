@@ -19,6 +19,7 @@ public class ProtocolCommand {
 	public final static byte MSG_TYPE_QUERY_ADDRESS = 0x57;//查询地址码
 	public final static byte MSG_TYPE_ADD_MUSICNAME_RECORD = 0x36;//添加歌曲名信息
 	public final static byte MSG_TYPE_NOTIFY_GATEWAY = (byte) 0xaa;//通报网关IP和序列号
+	public final static byte MSG_TYPE_REQUEST_PLAY = (byte) 0xac; //在线播放
 	public final static byte MSG_TYPE_HOST_ALARM = 0x78;//得到报警探头信息
 	public final static byte MSG_TYPE_UPDATE_MUSIC = (byte)0xa9;//歌曲更新同步
 	public final static byte MSG_TYPE_QUERY_MUSIC_VERSION = (byte)0xab;//查询歌曲版本
