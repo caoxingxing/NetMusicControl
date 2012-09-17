@@ -197,6 +197,9 @@ public class PackageObject {
 			case ProtocolCommand.MSG_TYPE_UDP_BROADCAST:
 				pr = new UdpInfoRecord();
 				break;
+			case ProtocolCommand.MSG_TYPE_REQUEST_PLAY:
+			    pr = new RequestPlayRecord();
+			    break;
 			default:
 				break;
 			}
