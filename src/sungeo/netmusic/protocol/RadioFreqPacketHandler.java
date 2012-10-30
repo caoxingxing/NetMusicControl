@@ -118,7 +118,7 @@ public class RadioFreqPacketHandler {
 			if (mParams[0] == 0) {
 				setMusicMute(false);
 			} else if (mParams[0] == 0x30){//ÔÝÍ£
-				close();
+			    MainApplication.getInstance().getmMediaMgr().pause(false);
 				param = mParams;
 			} else {
 				volumeAdd();
@@ -138,7 +138,7 @@ public class RadioFreqPacketHandler {
 			param = mParams;
 			break;
 		case ProtocolCommand.CMD_POWER_OFF:
-			close();
+		    MainApplication.getInstance().getmMediaMgr().stop();
 			param = new byte[1];
 			param[0] = 0;
 			break;
@@ -174,10 +174,6 @@ public class RadioFreqPacketHandler {
 		}
 		mSucess = true;
 		return param;
-	}
-
-	private void close() {
-		MainApplication.getInstance().getmMediaMgr().pause(false);
 	}
 
 	private int playNext() {
