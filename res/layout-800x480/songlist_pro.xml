@@ -1,68 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:panel="http://schemas.android.com/apk/res/com.sungeo"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:background="@drawable/background">
-	<TextView android:id="@+id/album_title_text"
-		android:layout_height="wrap_content" android:layout_width="wrap_content"
-		android:layout_alignParentTop="true" android:textColor="#ffffffff"
-		android:layout_marginTop="10dip" android:text="专辑名称" android:textSize="30dip"
-		android:layout_centerHorizontal="true"></TextView>
-	<Button android:layout_height="wrap_content" android:visibility="gone"
-		android:layout_alignParentBottom="true" android:layout_width="wrap_content"
-		android:background="@drawable/backbtn" android:id="@+id/backmain_btn"
-		android:layout_alignParentRight="false" android:layout_alignRight="@+id/playsmode_btn"></Button>
+    xmlns:panel="http://schemas.android.com/apk/res/com.sungeo"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background" >
 
-	<RelativeLayout android:id="@id/panelContent"
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentLeft="true" android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<Button android:id="@+id/ctrl_playbtn" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_centerHorizontal="true"
-			android:background="@drawable/playpanel"
-			android:layout_centerVertical="true" />
-		<Button android:id="@+id/ctrl_prebtn" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_centerVertical="true"
-			android:background="@drawable/prepanel" android:layout_marginLeft="5dip"
-			android:layout_toLeftOf="@+id/ctrl_playbtn"
-			android:layout_marginRight="5dip" />
-		<Button android:id="@+id/ctrl_nextbtn" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_centerVertical="true"
-			android:background="@drawable/nextpanel" android:layout_toRightOf="@+id/ctrl_playbtn"
-			android:layout_marginLeft="5dip" />
-		<Button android:id="@+id/volume_decbtn" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_centerVertical="true"
-			android:background="@drawable/volumedec" android:layout_toLeftOf="@+id/ctrl_prebtn"
-			android:layout_marginRight="5dip" />
-		<Button android:id="@+id/volume_addbtn" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_centerVertical="true"
-			android:background="@drawable/volumeadd" android:layout_toRightOf="@+id/ctrl_nextbtn"
-			android:layout_marginLeft="5dip" />
-		<Button android:id="@+id/music_delbtn" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_centerVertical="true"
-			android:layout_alignParentLeft="true"
-			android:layout_marginLeft="10dip" />
-	</RelativeLayout>
-	<RelativeLayout android:id="@+id/modepanelContent"
-		android:layout_above="@+id/panelContent"
-		android:layout_alignParentLeft="true" android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<Button android:layout_height="wrap_content" android:layout_centerHorizontal="true"
-			android:layout_width="wrap_content" android:background="@drawable/repeat_normal"
-			android:id="@+id/playomode_btn">
-		</Button>
-		<Button android:layout_height="wrap_content" android:layout_toLeftOf="@+id/playomode_btn"
-			android:layout_width="wrap_content" android:background="@drawable/repeatone_normal"
-			android:id="@+id/playsmode_btn" android:layout_marginRight="50dip">
-		</Button>
-		<Button android:layout_height="wrap_content" android:layout_toRightOf="@+id/playomode_btn"
-			android:layout_width="wrap_content" android:background="@drawable/random_normal"
-			android:id="@+id/playrmode_btn" android:layout_marginLeft="50dip">
-		</Button>
-	</RelativeLayout>
-	<ListView android:layout_width="fill_parent" android:id="@+id/listView1"
-		android:layout_below="@+id/album_title_text" android:layout_height="700dip"
-		android:cacheColorHint="#00000000" android:choiceMode="singleChoice"
-		android:layout_above="@+id/modepanelContent" android:divider="#FFCC00">
-	</ListView>
+    <TextView
+        android:id="@+id/album_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dip"
+        android:text="专辑名称"
+        android:textColor="#ffffffff"
+        android:textSize="30dip" >
+    </TextView>
+
+    <Button
+        android:id="@+id/backmain_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignRight="@+id/playsmode_btn"
+        android:background="@drawable/backbtn"
+        android:visibility="gone" >
+    </Button>
+
+    <RelativeLayout
+        android:id="@id/panelContent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" >
+
+        <Button
+            android:id="@+id/ctrl_playbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/playpanel" />
+
+        <Button
+            android:id="@+id/ctrl_prebtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_toLeftOf="@+id/ctrl_playbtn"
+            android:background="@drawable/prepanel" />
+
+        <Button
+            android:id="@+id/ctrl_nextbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"
+            android:layout_toRightOf="@+id/ctrl_playbtn"
+            android:background="@drawable/nextpanel" />
+
+        <Button
+            android:id="@+id/volume_decbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dip"
+            android:layout_toLeftOf="@+id/ctrl_prebtn"
+            android:background="@drawable/volumedec" />
+
+        <Button
+            android:id="@+id/volume_addbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"
+            android:layout_toRightOf="@+id/ctrl_nextbtn"
+            android:background="@drawable/volumeadd" />
+
+        <Button
+            android:id="@+id/music_delbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/modepanelContent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/panelContent"
+        android:layout_alignParentLeft="true" >
+
+        <Button
+            android:id="@+id/playomode_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/repeat_normal" >
+        </Button>
+
+        <Button
+            android:id="@+id/playsmode_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dip"
+            android:layout_toLeftOf="@+id/playomode_btn"
+            android:background="@drawable/repeatone_normal" >
+        </Button>
+
+        <Button
+            android:id="@+id/playrmode_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dip"
+            android:layout_toRightOf="@+id/playomode_btn"
+            android:background="@drawable/random_normal" >
+        </Button>
+        <Button
+            android:id="@+id/playssmode_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dip"
+            android:layout_toRightOf="@+id/playrmode_btn"
+            android:background="@drawable/single_normal" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="fill_parent"
+        android:layout_height="700dip"
+        android:layout_above="@+id/modepanelContent"
+        android:layout_below="@+id/album_title_text"
+        android:cacheColorHint="#00000000"
+        android:choiceMode="singleChoice"
+        android:divider="#FFCC00" >
+    </ListView>
+
 </RelativeLayout>

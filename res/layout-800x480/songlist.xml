@@ -26,6 +26,11 @@
 		android:background="@drawable/random_normal" android:id="@+id/playrmode_btn"
 		android:layout_alignParentRight="false" android:layout_alignRight="@+id/playsmode_btn">
 	</Button>
+	<Button android:layout_height="wrap_content"
+		android:layout_below="@+id/playrmode_btn" android:layout_width="wrap_content"
+		android:background="@drawable/single_normal" android:id="@+id/playssmode_btn"
+		android:layout_alignParentRight="false" android:layout_alignRight="@+id/playrmode_btn">
+	</Button>
 	<Button android:layout_height="wrap_content" android:visibility="gone"
 		android:layout_alignParentBottom="true" android:layout_width="wrap_content"
 		android:background="@drawable/backbtn" android:id="@+id/backmain_btn"
