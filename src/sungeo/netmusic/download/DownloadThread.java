@@ -106,7 +106,8 @@ public class DownloadThread extends Thread {
 				if (len == -1) {
 					break;
 				}
-				os.write(mBuffer);
+
+				os.write(mBuffer, 0, len);
 
 				curPos += len;
 
