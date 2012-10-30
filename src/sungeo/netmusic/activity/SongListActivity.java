@@ -35,6 +35,7 @@ public class SongListActivity extends BaseActivity {
 	private Button 			mSinModeBtn;
 	private Button			mOrdModeBtn;
 	private Button			mRadModeBtn;
+	private Button         mSingleModeBtn;
 	private Button 			mDelSongBtn;
 	private List<String> 	mListItem;
 	private MenuItem 		mMenuItem = null;
@@ -138,6 +139,7 @@ public class SongListActivity extends BaseActivity {
 		mOrdModeBtn = null;
 		mRadModeBtn = null;
 		mDelSongBtn = null;
+		mSingleModeBtn = null;
 		mCtrlBtn = null;
 	}
 	
@@ -228,6 +230,10 @@ public class SongListActivity extends BaseActivity {
 		mSinModeBtn.setOnClickListener(mModeBtnListener);
 		mOrdModeBtn.setOnClickListener(mModeBtnListener);
 		mRadModeBtn.setOnClickListener(mModeBtnListener);
+		mSingleModeBtn = (Button) findViewById(R.id.playssmode_btn);
+		if (mSingleModeBtn != null) {
+		    mSingleModeBtn.setOnClickListener(mModeBtnListener);
+		}
 	}
 
 	private void initCtrlBtn() {
@@ -373,6 +379,9 @@ public class SongListActivity extends BaseActivity {
 		mOrdModeBtn.setBackgroundResource(R.drawable.repeat_normal);
 		mRadModeBtn.setBackgroundResource(R.drawable.random_normal);
 		mSinModeBtn.setBackgroundResource(R.drawable.repeatone_normal);
+		if (mSingleModeBtn != null) {
+		    mSingleModeBtn.setBackgroundResource(R.drawable.single_normal);
+		}
 
 		byte mode = mCurAlbum.getPlayMode();
 		switch (mode) {
@@ -385,6 +394,11 @@ public class SongListActivity extends BaseActivity {
 		case MediaMgr.PLAY_MODE_SINGLE:
 			mSinModeBtn.setBackgroundResource(R.drawable.repeatone_clicked);
 			break;
+		case MediaMgr.PLAY_MODE_SINGLE_END:
+		    if (mSingleModeBtn != null) {
+		        mSingleModeBtn.setBackgroundResource(R.drawable.single_clicked);
+		    }
+		    break;
 		default:
 			mOrdModeBtn.setBackgroundResource(R.drawable.repeat_clicked);
 			break;
@@ -402,6 +416,9 @@ public class SongListActivity extends BaseActivity {
 			mOrdModeBtn.setBackgroundResource(R.drawable.repeat_clicked);
 			mRadModeBtn.setBackgroundResource(R.drawable.random_normal);
 			mSinModeBtn.setBackgroundResource(R.drawable.repeatone_normal);
+			if (mSingleModeBtn != null) {
+			    mSingleModeBtn.setBackgroundResource(R.drawable.single_normal);
+			}
 			if (mMainApp.getmCurPlayAlbumId() == mMainApp.getmCurShowAlbumId()) {
 				mMainApp.getmMediaMgr().setPlayMode(MediaMgr.PLAY_MODE_ORDER);
 				mMainApp.getmMediaMgr().computeNextSongId();
@@ -416,6 +433,9 @@ public class SongListActivity extends BaseActivity {
 			mOrdModeBtn.setBackgroundResource(R.drawable.repeat_normal);
 			mRadModeBtn.setBackgroundResource(R.drawable.random_normal);
 			mSinModeBtn.setBackgroundResource(R.drawable.repeatone_clicked);
+			if (mSingleModeBtn != null) {
+			    mSingleModeBtn.setBackgroundResource(R.drawable.single_normal);
+			}
 			if (mMainApp.getmCurPlayAlbumId() == mMainApp.getmCurShowAlbumId()) {
 				mMainApp.getmMediaMgr().setPlayMode(MediaMgr.PLAY_MODE_SINGLE);
 				mMainApp.getmMediaMgr().computeNextSongId();
@@ -429,6 +449,9 @@ public class SongListActivity extends BaseActivity {
 			mOrdModeBtn.setBackgroundResource(R.drawable.repeat_normal);
 			mRadModeBtn.setBackgroundResource(R.drawable.random_clicked);
 			mSinModeBtn.setBackgroundResource(R.drawable.repeatone_normal);
+			if (mSingleModeBtn != null) {
+			    mSingleModeBtn.setBackgroundResource(R.drawable.single_normal);
+			}
 			mMainApp.getmMsgSender().sendStrMsg("随机播放");
 			if (mMainApp.getmCurPlayAlbumId() == 0) {
 				playRandom();
@@ -437,6 +460,20 @@ public class SongListActivity extends BaseActivity {
 				playRandom();
 				mMainApp.getmMediaMgr().computeNextSongId();
 			}
+		}
+		break;
+		case R.id.playssmode_btn: {
+		    mCurAlbum.setPlayMode(MediaMgr.PLAY_MODE_SINGLE_END);
+            mOrdModeBtn.setBackgroundResource(R.drawable.repeat_normal);
+            mRadModeBtn.setBackgroundResource(R.drawable.random_normal);
+            mSinModeBtn.setBackgroundResource(R.drawable.repeatone_normal);
+            if (mSingleModeBtn != null) {
+                mSingleModeBtn.setBackgroundResource(R.drawable.single_clicked);
+            }
+            mMainApp.getmMsgSender().sendStrMsg("单曲播放");
+            if (mMainApp.getmCurPlayAlbumId() == mMainApp.getmCurShowAlbumId()) {
+                mMainApp.getmMediaMgr().setPlayMode(MediaMgr.PLAY_MODE_SINGLE_END);
+            }
 		}
 		break;
 		default:
