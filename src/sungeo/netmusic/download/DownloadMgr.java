@@ -207,7 +207,7 @@ public class DownloadMgr {
 
 		if (mAlbumName != null && !mAlbumName.equals("")) {
 			// »ñÈ¡SD¿¨Ä¿Â¼  
-			mDownloadDir = mMainApp.getExtStoDir() + "/" + mAlbumName + "/";
+			mDownloadDir = mMainApp.getExtStoDir() + File.separator + mAlbumName + File.separator;
 		} else {
 			mDownloadDir = null;
 		}
